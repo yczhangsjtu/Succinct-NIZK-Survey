@@ -1,0 +1,125 @@
+\documentclass{beamer}
+\usetheme{Warsaw}
+
+% \usepackage{beamerthemesplit} // Activate for custom appearance
+
+\newcommand{\calL}{\mathcal{L}}
+
+\title{ZK-SNARK and ZK-STARK}
+\author{Yuncong Zhang}
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\frame{\tableofcontents}
+
+\section{Introduction}
+\subsection{Background}
+\frame
+{
+  \frametitle{Background}
+  Non-Interactive Zero Knowledge: Prover convinces verifier that $x\in\calL$ without leaking any information of witness $w$.
+  \begin{itemize}
+    \item \textbf{Completeness}: prover is able to convince verifier
+    \item \textbf{Soundness}: a successful prover ``knows'' the witness
+    \item \textbf{Zero Knowledge}: simulator
+  \end{itemize}
+}
+\subsection{Preliminaries}
+\frame
+{
+  \frametitle{Preliminaries}
+  NP language:
+  \begin{itemize}
+  \item Relation $R=\{(x,w)\}$
+  \item Language $\mathcal{L}=\{x:\exists (x,w)\in R\}$
+  \item $\mathsf{NP}=\{\mathcal{L}:\exists \text{p.p.t } \mathcal{V}(x,w)\text{ for $R$}\}$
+  \end{itemize}
+}
+\frame
+{
+  \frametitle{Preliminaries}
+  Interactive Proofs:
+  \begin{itemize}
+  \item $\mathsf{IP}[r,k]$: exists p.p.t. prover $\mathcal{P}$ and verifier $\mathcal{V}$
+  	\begin{itemize}
+  	\item $\mathcal{P}$ convinces $\mathcal{V}$;
+  	\item $r$ rounds of interaction;
+  	\item communication cost $k$-bits in each round.
+  	\end{itemize}
+  \item $\mathsf{PCP}[r,k]$: exists p.p.t prover $\mathcal{P}$ and verifier $\mathcal{V}$
+  	\begin{itemize}
+  	\item $\mathcal{P}$ outputs proof string: $\mathsf{PCP}$
+  	\item $\mathcal{V}^{\mathsf{PCP}}$ has oracle access to $\mathsf{PCP}$
+  	\item $\mathcal{V}$ consumes at most $r$ bits randomness
+  	\item $\mathcal{V}$ accesses at most $k$ bits on $\mathsf{PCP}$
+	  \end{itemize}
+  \item $\mathsf{IOP}$: IP + PCP
+  \end{itemize}
+}
+\frame
+{
+  \frametitle{Preliminaries}
+  PCP Theorem:
+  \[
+  	\mathsf{PCP}[O(n),O(1)]=\mathsf{NP}
+  \]
+}
+\frame
+{
+  \frametitle{Preliminaries}
+  Bilinear pairing based on Elliptic Curves:
+  \begin{itemize}
+  \item Groups $\mathbb{G}_1,\mathbb{G}_2,\mathbb{G}_T$, all of size $n$
+  \item Map $e:\mathbb{G}_1\times\mathbb{G}_2\to\mathbb{G}_T$
+  \item Generators $g_1\in\mathbb{G}_1,g_2\in\mathbb{G}_2$, $e(g_1,g_2)\in\mathbb{G}_T$
+  \item Bilinear: $e(a\cdot g_1,b\cdot g_2)=ab\cdot e(g_1,g_2)$
+  \end{itemize}
+  Notations: $[a]_1:=a\cdot g_1$, $[b]_2:=b\cdot g_2$, $[c]_T:=c\cdot e(g_1,g_2)$
+}
+\frame
+{
+  \frametitle{Preliminaries}
+}
+\section{ZK-SNARK}
+\subsection{History}
+\frame
+{
+  \frametitle{History}
+}
+\subsection{QAP}
+\frame
+{
+  \frametitle{QAP}
+}
+\subsection{Groth 16}
+\frame
+{
+  \frametitle{Groth 16}
+}
+\section{ZK-STARK}
+\subsection{History}
+\frame
+{
+  \frametitle{History}
+}
+\subsection{ACSP}
+\frame
+{
+  \frametitle{ACSP}
+}
+\subsection{FRI}
+\frame
+{
+  \frametitle{FRI}
+}
+
+\section{Conclusion}
+\frame
+{
+  \frametitle{Conclusion}
+}
+
+\end{document}
