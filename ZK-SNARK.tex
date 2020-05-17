@@ -42,19 +42,19 @@
 
 \section{Introduction}
 
-Zero-Knowledge Succinct Noninteractive ARgument of Knowledge (zkSNARK) enables verifying the correctness of an NP statement without revealing any information about the witness, with complexity lower than direct verification.
-The concept of zero-knowledge proof originated from Goldwasser, Micali, and Rackoff~\cite{gmr1989knowledge}.
-Following this work, and the ground-breaking proposal of PCP by Babai et al.~\cite{bfls1991checking}, Kilian~\cite{kilian1992note} created the first \emph{succinct interactive argument} by compiling a PCP via cryptographic commitment, where the notation of ``argument'' means the proof system has only computational soundness.
-After that, Micali~\cite{micali2000computationally} obtained a succinct non-interactive argument by applying the Fiat-Shamir~\cite{FiatS86} transformation to Kilian's protocol.
-Since then, a decade of research has produced a tremendous and ever-increasing number of zkSNARK implementations.
-Currently, zkSNARK is still undergoing active research, both for theoretical interests~\cite{NaorY90} and for its practical applications, especially in Blockchain~\cite{Ben-SassonCG0MTV14}.
+Zero-Knowledge Succinct Non-interactive ARgument of Knowledge (zkSNARK) enables verifying the correctness of an NP statement without revealing any information of the witness, with complexity lower than direct verification.
+The concept of zero-knowledge proof originated from Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85}.
+Following this work and the ground-breaking proposal of PCP by Babai et al.~\cite{BabaiFLS91}, Kilian~\cite{Kilian92} created the first \emph{succinct interactive argument} by compiling a PCP via cryptographic commitment, where the notation ``argument'' means the proof system has only computational soundness.
+After that, Micali~\cite{Micali00} constructed a succinct non-interactive argument by applying the Fiat-Shamir~\cite{FiatS86} transformation to Kilian's protocol.
+Since then, a decade of research has produced a large and ever-increasing number of zkSNARK implementations.
+Currently, zkSNARK is still under active research, both for theoretical interests~\cite{NaorY90} and for its practical applications, especially in Blockchain~\cite{Ben-SassonCG0MTV14}.
 
-However, the rapid development of zkSNARK exhibits considerable challenges for researchers to keep up with the state-of-the-art of this field.
+However, the rapid development of zkSNARK poses considerable challenges for researchers to keep up with the state-of-the-art of this field.
 The ZKProof Community recently initiated the standardization of zero-knowledge proofs and has presented a reference document~\cite{ZKProof20}.
 Despite being comprehensive, this document is more of an exhaustive reference of concepts than a systematic review of the literature.
-Other surveys including those by Nitulescu~\cite{nitulescu19gentle}, Walfish~\cite{WalfishB15} et al.\ are also valuable for understanding the crucial concepts and research status of zkSNARKs.
+Other surveys including those by Nitulescu~\cite{Nitulescu19}, Walfish~\cite{WalfishB15} et al.\ are also helpful for understanding the key concepts and research status of zkSNARKs.
 However, they each focus on a limited number of lines of progress.
-Nitulescu~\cite{nitulescu19gentle} describes the early history of zero-knowledge proofs and provides a detailed technical explanation of QAP/LIP-based implementations of zkSNARKs.
+Nitulescu~\cite{Nitulescu19} describes the early history of zero-knowledge proofs and provides a detailed technical explanation of QAP/LIP-based implementations of zkSNARKs.
 Walfish~\cite{WalfishB15} illustrates the ideas behind implementations including Pinocchio~\cite{ParnoHG013}, Thaler~\cite{Thaler13}, Buffet~\cite{WahbySRBW15}, TinyRAM~\cite{Ben-SassonCGTV13, Ben-SassonCTV14}, et al.
 Both works focus on the circuit-oriented designs and neglect those works that are more friendly with random access machines (RAMs)~\cite{Ben-SassonCGTV13, Ben-SassonCGV16, Ben-SassonBHR18}.
 A comprehensive survey of literature in zkSNARKs can serve as an anchor of knowledge in this field of research, provide an overview of the most significant ideas behind current implementations, and inspire new perspectives to understand zkSNARKs.
@@ -62,7 +62,7 @@ A comprehensive survey of literature in zkSNARKs can serve as an anchor of knowl
 In this paper, we present a survey that provides an overview of the current status of research of zkSNARKs.
 First, we discuss the concepts that are necessary to understand the literature in this research field.
 Secondly, we recall the history of zkSNARKs and examine the motivations and insights behind each major contribution.
-Finally, we propose a framework for classifying and evaluating the zkSNARK implementations, in terms of efficiency, functionality, expressiveness, infrastructure, building blocks, security assumptions, et al.
+Finally, we propose a framework for classifying and evaluating the zkSNARK implementations in terms of efficiency, functionality, expressiveness, infrastructure, building blocks, security assumptions, et al.
 
 
 % Zero-Knowledge Proof was first introduced by Goldwasser, Micali, and Rackoff in 1985 \cite{gmr1989knowledge}, which constructed a zero-knowledge proof for graph 3-colorability.
@@ -75,32 +75,32 @@ Finally, we propose a framework for classifying and evaluating the zkSNARK imple
 % Above are the ground-breaking works for NIZKs.
 % Almost all the subsequent works on NIZK directly or indirectly follow them.
 
-\section{Preliminaries}
-
-  \subsection{Notations}
-
-   \paragraph{Elliptic curves.}
-
-  \subsection{Cryptographic Building Blocks}
-
-    \paragraph{Pairing.}
-
-\section{Interactive Proofs}
-
-  \subsection{Probabilistic Checkable Proofs}
-
-\section{Pairing-based ZK-SNARKs}
-
-The construction of ZK-SNARK in this line of work originates from a series of works by Groth, Ostrovsky and Sahai \cite{groth2006simulation,gos2006non,gos2006perfect}, which proposed constructions of NIZK based on bilinear groups.
-The state-of-the-art construction of ZK-SNARK is proposed by Groth in 2016 \cite{groth2016size}, which will hereby be referred to as Groth16.
-
-\subsection{Quadratic Arithmetic Problems}
-
-\subsection{PCPs for QAP}
-
-\subsection{QAP-based NIZKs Without PCP}
-
-\section{PCP-based ZK-SNARKs}
+% \section{Preliminaries}
+%
+%   \subsection{Notations}
+%
+%    \paragraph{Elliptic curves.}
+%
+%   \subsection{Cryptographic Building Blocks}
+%
+%     \paragraph{Pairing.}
+%
+% \section{Interactive Proofs}
+%
+%   \subsection{Probabilistic Checkable Proofs}
+%
+% \section{Pairing-based ZK-SNARKs}
+%
+% The construction of ZK-SNARK in this line of work originates from a series of works by % Groth, Ostrovsky and Sahai \cite{groth2006simulation,gos2006non,gos2006perfect}, which % proposed constructions of NIZK based on bilinear groups.
+% The state-of-the-art construction of ZK-SNARK is proposed by Groth in 2016 \cite{% groth2016size}, which will hereby be referred to as Groth16.
+%
+% \subsection{Quadratic Arithmetic Problems}
+%
+% \subsection{PCPs for QAP}
+%
+% \subsection{QAP-based NIZKs Without PCP}
+%
+% \section{PCP-based ZK-SNARKs}
 
 \bibliographystyle{alpha}
 \bibliography{reference}
