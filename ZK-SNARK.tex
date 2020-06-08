@@ -1,4 +1,8 @@
-\documentclass[12pt]{article}
+\documentclass[acmlarge]{acmart}
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
 \usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
 \usepackage{amsthm}
 \usepackage{url}
@@ -23,12 +27,20 @@
 
 \title{Survey of ZK-SNARK}
 \author{Yuncong Zhang}
+\authornotemark[1]
+\email{yczhangsjtu@163.com}
+\affiliation{%
+  \institution{Shanghai Jiao Tong University}
+  \streetaddress{Dongchuan Rd. 800}
+  \city{Minhang}
+  \state{Shanghai}
+  \postcode{200240}
+}
 % \date{} % delete this line to display the current date
 
 %%% BEGIN DOCUMENT
 \begin{document}
 
-\maketitle
 % \tableofcontents
 % \newpage
 \begin{abstract}
@@ -40,30 +52,39 @@
 % In this article, we will present a survey of the research that are related to ZK-SNARK.
 \end{abstract}
 
+\maketitle
+
 \section{Introduction}
 
-Zero-Knowledge Succinct Non-interactive ARgument of Knowledge (zkSNARK) enables verifying the correctness of an NP statement without revealing any information of the witness, with complexity lower than direct verification.
-The concept of zero-knowledge proof originated from Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85}.
-Following this work and the ground-breaking proposal of PCP by Babai et al.~\cite{BabaiFLS91}, Kilian~\cite{Kilian92} created the first \emph{succinct interactive argument} by compiling a PCP via cryptographic commitment, where the notation ``argument'' means the proof system has only computational soundness.
-After that, Micali~\cite{Micali00} constructed a succinct non-interactive argument by applying the Fiat-Shamir~\cite{FiatS86} transformation to Kilian's protocol.
-Since then, a decade of research has produced a large and ever-increasing number of zkSNARK implementations.
-Currently, zkSNARK is still under active research, both for theoretical interests~\cite{NaorY90} and for its practical applications, especially in Blockchain~\cite{Ben-SassonCG0MTV14}.
+% The zkSNARKs are product of a series of studies~\cite{BlumFM88, SantisMP87, BabaiFLS91, Kilian92, Micali00, Groth06, GrothOS06Non, GrothOS06Perfect, Groth10, BitanskyCCT12} trying to improve \emph{zero-knowledge proofs} introduced by the ground-breaking work of Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85}.
+% Zero-knowledge proofs allow a party to prove a statement to another party interactively without leaking secret information.
+% As a variant, zkSNARKs additionally enjoy 1) non-interactivity, which allows formulating the proof in a string that can be transmitted and stored in places like blockchains; and 2) succinctness, which requires that the proof string is short and verification is sublinear to the statement size.
+Zero-Knowledge Succinct Non-interactive ARgument of Knowledge (zkSNARK)~\cite{BitanskyCCT12} enables verifying computation outputs without knowing the inputs and faster than the original computation.
+Currently, zkSNARKs are under active research, particularly due to their applications in blockchains~\cite{Ben-SassonCG0MTV14, SunALY17}, where zkSNARKs facilitate creating confidential transactions that conceal part or all of the transaction details.
+Recent years have seen an explosion of zkSNARK implementations enjoying different properties including constant-size proofs~\cite{Groth16, GennaroGP013, Ben-SassonCGTV13, ParnoHG013, Ben-SassonCGTV13}, universal or trustless setups~\cite{GrothKMMM18, MallerBKM19, BunzFS20, Ben-SassonBHR18, Ben-SassonCRSVW19, AmesHIV17}, and post-quantum security~\cite{Ben-SassonBHR18, Ben-SassonCRSVW19}.
 
-However, the rapid development of zkSNARK poses considerable challenges for researchers to keep up with the state-of-the-art of this field.
-The ZKProof Community recently initiated the standardization of zero-knowledge proofs and has presented a reference document~\cite{ZKProof20}.
-Despite being comprehensive, this document is more of an exhaustive reference of concepts than a systematic review of the literature.
-Other surveys including those by Nitulescu~\cite{Nitulescu19}, Walfish~\cite{WalfishB15} et al.\ are also helpful for understanding the key concepts and research status of zkSNARKs.
-However, they each focus on a limited number of lines of progress.
-Nitulescu~\cite{Nitulescu19} describes the early history of zero-knowledge proofs and provides a detailed technical explanation of QAP/LIP-based implementations of zkSNARKs.
-Walfish~\cite{WalfishB15} illustrates the ideas behind implementations including Pinocchio~\cite{ParnoHG013}, Thaler~\cite{Thaler13}, Buffet~\cite{WahbySRBW15}, TinyRAM~\cite{Ben-SassonCGTV13, Ben-SassonCTV14}, et al.
-Both works focus on the circuit-oriented designs and neglect those works that are more friendly with random access machines (RAMs)~\cite{Ben-SassonCGTV13, Ben-SassonCGV16, Ben-SassonBHR18}.
+
+However, the rapid development of zkSNARK poses considerable challenges for researchers to keep up with the state-of-the-art.
+Dozens of existing zkSNARK implementations rely on a large and increasing number of underlying tools of various efficiency, security, and functionalities.
+It is also difficult to evaluate and compare existing schemes due to the high-dimensionality of measurement metrics including efficiency, security, and functionality.
+Existing studies trying to overview this field are either oversimplifying~\cite{Nitulescu19, WalfishB15} or never tried to illustrate existing concrete implementations~\cite{ZKProof20}.
 A comprehensive survey of literature in zkSNARKs can serve as an anchor of knowledge in this field of research, provide an overview of the most significant ideas behind current implementations, and inspire new perspectives to understand zkSNARKs.
 
-In this paper, we present a survey that provides an overview of the current status of research of zkSNARKs.
-First, we discuss the concepts that are necessary to understand the literature in this research field.
-Secondly, we recall the history of zkSNARKs and examine the motivations and insights behind each major contribution.
-Finally, we propose a framework for classifying and evaluating the zkSNARK implementations in terms of efficiency, functionality, expressiveness, infrastructure, building blocks, security assumptions, et al.
+% For example, a complete description of efficiency should at least consist of prover computation, verifier computation, proof size, and setup costs.
+% The ZKProof Community recently initiated the standardization of zero-knowledge proofs and has presented a reference document~\cite{ZKProof20}.
+% Despite being comprehensive, this document is more of an exhaustive reference of concepts than a systematic review of the literature.
+% Other surveys including those by Nitulescu~\cite{Nitulescu19}, Walfish~\cite{WalfishB15} are also helpful for understanding the key concepts and research status of zkSNARKs.
+% However, they each focus on a limited number of lines of progress.
+% Nitulescu~\cite{Nitulescu19} describes the early history of zero-knowledge proofs and provides a detailed technical explanation of QAP/LIP-based implementations of zkSNARKs.
+% Walfish~\cite{WalfishB15} illustrates the ideas behind implementations including Pinocchio~\cite{ParnoHG013}, Thaler~\cite{Thaler13}, Buffet~\cite{WahbySRBW15}, and TinyRAM~\cite{Ben-SassonCGTV13, Ben-SassonCTV14}.
+% Both studies focus on the circuit-oriented designs and neglect those works that are more friendly with random access machines (RAMs)~\cite{Ben-SassonCGTV13, Ben-SassonCGV16, Ben-SassonBHR18}.
 
+In this paper, we present a survey that overviews the current status of zkSNARKs.
+First, we discuss the concepts that are necessary to understand the related literature.
+Then we recall the history of zkSNARKs and examine the motivations and insights behind each major contribution.
+Finally, we propose a framework for classifying and evaluating the zkSNARK implementations in terms of efficiency, functionality, expressiveness, infrastructure, building blocks, and security assumptions.
+Using this framework, we reveal potential ways to leverage the existing underlying tools to construct new zkSNARKs with better combinations of properties.
+We also point out promising directions in which we can design new useful tools.
 
 % Zero-Knowledge Proof was first introduced by Goldwasser, Micali, and Rackoff in 1985 \cite{gmr1989knowledge}, which constructed a zero-knowledge proof for graph 3-colorability.
 % Blum, Feldman and Micali followed their work and developed the concept of \emph{Non-Interactive Zero-Knowledge} (NIZK) proofs \cite{bfm1988non}, which eliminates the need of interaction by allowing the prover and the verifier to share a common reference string.
@@ -74,6 +95,11 @@ Finally, we propose a framework for classifying and evaluating the zkSNARK imple
 
 % Above are the ground-breaking works for NIZKs.
 % Almost all the subsequent works on NIZK directly or indirectly follow them.
+% \section{Related Works}
+
+% Following this work and the ground-breaking proposal of PCP by Babai et al.~\cite{BabaiFLS91}, Kilian~\cite{Kilian92} created the first \emph{succinct interactive argument} by compiling a PCP via cryptographic commitment, where the notation ``argument'' means the proof system has only computational soundness.
+% After that, Micali~\cite{Micali00} constructed a succinct non-interactive argument by applying the Fiat-Shamir~\cite{FiatS86} transformation to Kilian's protocol.
+% Since then, a decade of research has produced a large and ever-increasing number of zkSNARK implementations.
 
 % \section{Preliminaries}
 %
