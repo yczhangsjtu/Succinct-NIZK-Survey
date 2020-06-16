@@ -128,6 +128,35 @@ We also point out promising directions in which we can design new useful tools.
 %
 % \section{PCP-based ZK-SNARKs}
 
+
+% Fig.~\ref{fig:pp.zksnark} illustrates how preprocessing zkSNARK works.
+% \begin{figure}[ht!]
+% \includegraphics[width=0.4\textwidth]{images/ppzksnark.pdf}
+% \caption{Preprocessing zkSNARK}
+% \label{fig:pp.zksnark}
+% \descriptionlabel{
+% The $\Setup$ algorithm takes as inputs both the security parameter $\lambda$ and a circuit $C$, and outputs common reference strings, i.e. the proving key $\sigma_P$ and the verification key $\sigma_V$, to the prover and verifier respectively.
+% $\Setup$ also outputs a trapdoor $\tau$ which enables simulating proofs without witness.
+% The $\Prove$ algorithm takes as inputs an instance $x$ with corresponding witness $w$, together with proving key $\sigma_P$, and outputs the proof $\pi$ as validation of $x$.
+% The $\Verify$ algorithm verifies the correctness of $x$ with proof $\pi$ and verification key $\sigma_V$, and decides if to accept or reject.}
+% \Description{}
+% \end{figure}
+
+
+% In evaluating the efficiency of zkSNAKRs, the properties we care most about are proving time, verification time, proof sizes, and common reference string sizes.
+% Fig.~\ref{fig:snark.sizes} summarizes the asymptotic complexities of current zkSNARK implementations.
+% \begin{figure}[ht!]
+% \includegraphics[width=0.5\textwidth]{images/complexity.png}
+% \caption{Asymptotic complexities of zkSNARK implementations}
+% \label{fig:snark.sizes}
+% \descriptionlabel{
+% The big-$O$ notation here hides the security parameter $\lambda$.
+% The $n$ denotes the statement size.
+% For circuit-based zkSNARKs, $n$ is the circuit size.
+% For statements with succinct representation, e.g. STARK, $n$ is the length of execution trace, i.e. the size of the circuit representing the unrolled computation.}
+% \Description{}
+% \end{figure}
+
 \bibliographystyle{alpha}
 \bibliography{reference}
 

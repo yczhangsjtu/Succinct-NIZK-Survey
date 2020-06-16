@@ -11,7 +11,7 @@
 
 % See the ``Article customise'' template for come common customisations
 
-\title{Survey of ZK-SNARK}
+\title{SoK: Systematically Evaluating and Constructing zkSNARKs}
 \author{Yuncong Zhang}
 % \authornotemark[1]
 % \email{yczhangsjtu@163.com}
@@ -66,8 +66,8 @@ Existing zkSNARK constructions rely on a large and growing number of underlying 
 Existing reviews of literature~\cite{ZKProof20, Nitulescu19, WalfishB15} only introduced these tools separately instead of in a unified perspective.
 It is also tricky to assess and compare existing schemes due to the high-dimensionality of measurement metrics, summarized in Table~\ref{tab:measure}.
 Most of the studies that propose new constructions include an efficiency analysis and compare their products with previous ones.
-But these analysis are often incomplete and, to make things worse, diverse in notations, metrics, and parameters.
-A comprehensive survey of literature in zkSNARKs can serve as an anchor of knowledge in this field, to enhance understanding of why and how zkSNARKs appeared and thrived, to help selecting appropriate zkSNARKs for different application scenarios, to reveal the insights behind current constructions, and to uncover the full potential of the existing techniques to construct more efficient and secure zkSNARKs.
+But these analyses are often incomplete and, to make things worse, diverse in notations, metrics, and parameters.
+A comprehensive survey of literature in zkSNARKs can serve as an anchor of knowledge in this field, to enhance understanding of why and how zkSNARKs appeared and thrived, to help to select appropriate zkSNARKs for different application scenarios, to reveal the insights behind current constructions, and to uncover the full potential of the existing techniques to construct more efficient and secure zkSNARKs.
 
 \begin{table}[tb]
 	\caption{Examples of zkSNARK building tools}
@@ -116,11 +116,11 @@ A comprehensive survey of literature in zkSNARKs can serve as an anchor of knowl
 	\end{tabular}
 \end{table}
 
-In this paper, we present a survey that summarizes the knowledge of zkSNARKs in a systematic way.
-To begin the story, we recall the history of zkSNARKs to undertsand the role zkSNARK plays in a broader field called ``proof systems''.
-For the most part of this survey, we present the knowledge of zkSNARKs in three levels:
+In this paper, we present a survey that summarizes the knowledge of zkSNARKs systematically.
+To begin the story, we recall the history of zkSNARKs to understand the role zkSNARK plays in a broader field called ``proof systems''.
+For most of this survey, we present the knowledge of zkSNARKs in three levels:
 \begin{enumerate}
-	\item In the theoretical level, we provide a definition for zkSNARK as a special case of proof systems.
+	\item In the theoretical level, we define zkSNARK as a special case of proof systems.
 	Based on this definition, we illustrate current theoretic results on zkSNARKs, e.g. the best efficiency we can achieve under certain security assumptions.
 	\item In the technical level, we review and unify the existing frameworks of zkSNARK constructions.
 	In this unified framework, we classify and examine the existing zkSNARKs to reveal the insights behind the construction techniques.
@@ -131,7 +131,34 @@ For the most part of this survey, we present the knowledge of zkSNARKs in three 
 
 \section{Related Works}
 
+The zkSNARKs are variations of zero-knowledge proofs that originated from the ground-breaking work by Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85}.
+Zero-knowledge proofs are protocols allowing a party, called the prover, to prove a statement to another party, called the verifier, interactively without leaking secret information.
+This work also introduced the broader concept of \emph{interactive proofs}, which was simultaneously and independently proposed in the work of Babai~\cite{Babai85} in the name of Arthur-Merlin (AM) proofs.
+The major difference between AM proofs and interactive proofs is that AM proofs are public-coin proofs, which means all randomnesses the verifier uses must be revealed later to the prover.
 
+All the precursors of zkSNARKs, including zkSNARKs themselves, can be viewed as special cases of \emph{interactive proofs} with different property combinations.
+Particularly, non-interactive proofs are special interactive proofs where the interaction consists of a single message.
+For clarity, we prefer to use the term \emph{proof systems} for this broader concept, and refer to interactive proofs only when the interaction contains at least two messages from different parties.
+
+Zero-knowledge proofs demonstrated wide applications~\cite{GoldreichMW86, GoldreichMW87} soon after proposition.
+However, the zero-knowledge proof scheme provided by Goldwasser et al.\ is only of theoretical interest and not practical for real-world applications.
+Followup works focused on two goals: improving the efficiency to achieve \emph{succinct} interactive proofs, and constructing non-interactive zero-knowledge (NIZK) schemes.
+Succinctness means the communication cost and optionally the verifier computation cost are lower than the case when the prover directly reveals the witness to the verifier.
+
+The first breakthrough in improving the efficiency is the proposition of the \emph{Probabilistically Checkable Proof (PCP)} model by Babai et al~\cite{BabaiFLS91}.
+The PCP model allows the prover to send to the verifier a proof oracle that the verifier can query probabilistically, instead of a complete proof string that the verifier must read in the whole.
+This additional power makes constructing succinct PCP easier than constructing succinct interactive proofs.
+The PCP theorem~\cite{AroraLMSS98} later proved by Arora et al.\ indicates the existence of succinct PCPs for any NP languages.
+
+However, the PCP is only an ideal model as the proof oracle is unrealistic to implement.
+Regarding this issue, Kilian proposed a method to transform any PCP into a four-message interactive proof~\cite{Kilian92} using cryptographic tools, including collision-resistant hash functions and Merkle-trees.
+Kilian's construction is zero-knowledge if the underlying PCP is zero-knowledge.
+Meanwhile, the introduction of cryptography restricts the security to hold only against computationally bounded provers, since all-powerful provers can successfully cheat the verifier with false statements by breaking the hash function.
+Proof systems with this relaxed security requirement are called \emph{argument systems}~\cite{BrassardCC88}.
+
+For the other goal regarding non-interactivity, Blum et al.~\cite{BlumFM88} showed that NIZK is possible if the prover and the verifier are assumed to share a common random string before the prover generates any proofs.
+They also proposed the first NIZK, under the computational assumption that products of two large primes are indifferentiable from products of three large primes.
+Furthermore...
 
 \section{Preliminaries}
 
@@ -148,6 +175,72 @@ We say a system has $\lambda$-bit security if breaking this system costs at leas
 We use $n$ for the bit-lengths of algorithms inputs.
 We use $\eta(n)$ for a negligible function in $n$, $\polylog(n)$ for a poly-logarithmic function, and $\poly(n)$ for a polynomial function.
 We say an algorithm is p.p.t. if the algorithm is probabilistic and can only execute for a period of length $\poly(n)$.
+
+\subsection{Commitment scheme}
+
+A cryptographic commitment scheme enables ...
+A commitment scheme is a tuple $\Gamma=(\Setup, \Comm, \Open)$ of p.p.t. algorithms.
+\begin{enumerate}
+	\item $\Setup(1^{\lambda})\to\pp$ generates public parameters given the security bit number
+	\item $\Comm(\pp,m)\to(\cm,r)$ takes a message $m$ and generates a commitment $\cm$, together with an opening hint $r$
+	\item $\Open(\pp,\cm,m,r)\to b\in\{0,1\}$ takes a message $m$, a commitment $\cm$ and an opening hint $r$, and verifies if $\cm$ is a valid commitment of $m$.
+	If $b=1$, we say $(m,r)$ is a correct opening of $\cm$.
+\end{enumerate}
+A commitment scheme is expected to be \emph{binding}.
+
+\begin{definition}[Binding]
+A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is binding if ...
+\end{definition}
+
+A commitment scheme can optionally be \emph{hiding}.
+
+\begin{definition}[Hiding]
+A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is hiding if ...
+\end{definition}
+
+\paragraph{Polynomial commitment.} Polynomial commitment schemes are variants of commitment schemes that have message space $R[X]$, i.e. polynomials over ring $R$, and allow opening a single evaluation of the committed polynomial~\cite{KateZG10}.
+A polynomial commitment scheme is a tuple $\Gamma=(\Setup,\Comm,\Open,\Eval)$ where $(\Setup,\Comm,\Open)$ is a commitment scheme and $\Eval(\pp,\cm,x,y,d)\to b\in\{0,1\}$ is a protocol ...
+Except for the binding and hiding properties, a polynomial commitment scheme $\Gamma$ is also expected to be \emph{correct} and \emph{evaluation binding}.
+
+\begin{definition}[Correct]
+A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is correct if ...
+\end{definition}
+
+\begin{definition}[Evaluation binding]
+A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is evaluation binding if ...
+\end{definition}
+
+Sometimes we need a stronger property than the evaluation binding called \emph{knowledge soundness} that requires the prover to ``know'' the committed polynomial~\cite{BunzFS20}.
+
+\begin{definition}[Knowledge soundness]
+A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ has knowledge soundness if ...
+\end{definition}
+
+\paragraph{Accumulator.}
+Accumulators are another kind of variations of commitment schemes.
+Instead of committing a single element, an accumulator allows committing to a list of elements, and ...
+
+Merkle-tree is an example of an accumulator ...
+
+\subsection{Fiat-Shamir transformation and random oracle}
+
+Fiat-Shamir transformation is the standard way to transform a public-coin interactive protocol to a non-interactive scheme.
+The Fiat-Shamir transformation works by simulating the verifier challenges by the hash value of prover messages.
+However, the security of the resulting non-interactive scheme is established only in the random oracle model.
+Current security proving techniques require modeling the hash function by a random oracle, which is an ideal functionality that does not exist in reality.
+
+A random oracle is ...
+
+\subsection{Bilinear pairing}
+
+Given groups $\bbG_1$, $\bbG_2$ and $\bbG_T$, with $|\bbG_1|=|\bbG_2|=|\bbG_T|=q$, a bilinear pairing~\cite{BonehF01} is a mapping $e:\bbG_1\times\bbG_2\to\bbG_T$ that satisfies...
+
+\section{Definitions and Theoretical Results}
+
+The zkSNARKs are special proof systems satisfying a specific set of properties.
+We first give the definitions of proof systems and several properties that a proof system may have.
+Then we define zkSNARKs by referring to these definitions.
+Finally, we discuss the theoretical results about different properties of proof systems and demonstrate the minimum assumptions underlying desired combinations of properties.
 
 \subsection{Proof systems}
 
@@ -298,7 +391,7 @@ Based on the standard definitions described above, proof systems may take variat
 
 \begin{definition}[Succinctness]
 \label{def:succinctness}
-A proof system $\PiL$ is succinct if...
+A proof system $\PiL$ is succinct if the communication cost of $\PiL$ is at most polylogarithmic to the witness size.
 \end{definition}
 
 \begin{definition}[Scalability]
@@ -308,7 +401,7 @@ A proof system $\PiL$ is scalable if...
 
 \subsection{zkSNARK}
 
-With the above definitions on proof systems and their properties, we can now give the definition of zkSNARKs.
+With the above definitions on proof systems and their properties, we can now define zkSNARKs.
 
 \begin{definition}[zkSNARK]
 A \emph{zkSNARK} is a proof system that is zero-knowledge (Definition~\ref{def:zero.knowledge}), succinct (Definition~\ref{def:succinctness}), non-interactive, and argument-of-knowledge (Definition~\ref{def:proof.of.knowledge}).
@@ -322,116 +415,201 @@ Depending on how $\Setup$ works, a zkSNARK may be in one or more of the followin
 
 \paragraph{Transparent setup.} A zkSNARK has \emph{transparent setup} if ...
 
-% Fig.~\ref{fig:pp.zksnark} illustrates how preprocessing zkSNARK works.
-% \begin{figure}[ht!]
-% \includegraphics[width=0.4\textwidth]{images/ppzksnark.pdf}
-% \caption{Preprocessing zkSNARK}
-% \label{fig:pp.zksnark}
-% \descriptionlabel{
-% The $\Setup$ algorithm takes as inputs both the security parameter $\lambda$ and a circuit $C$, and outputs common reference strings, i.e. the proving key $\sigma_P$ and the verification key $\sigma_V$, to the prover and verifier respectively.
-% $\Setup$ also outputs a trapdoor $\tau$ which enables simulating proofs without witness.
-% The $\Prove$ algorithm takes as inputs an instance $x$ with corresponding witness $w$, together with proving key $\sigma_P$, and outputs the proof $\pi$ as validation of $x$.
-% The $\Verify$ algorithm verifies the correctness of $x$ with proof $\pi$ and verification key $\sigma_V$, and decides if to accept or reject.}
-% \Description{}
-% \end{figure}
+\subsection{Security Assumptions}
 
-\subsection{Cryptography}
+After the introduction of zero-knowledge proofs by Goldwasser et al.~\cite{GoldwasserMR85}, Goldreich, Micali, and Wigderson showed that zero-knowledge proofs exist for any NP languages, under the assumption that one-way function exists~\cite{GoldreichMW86}.
+The existence of one-way functions is almost the weakest assumption in cryptography.
+The only weaker one is P$\neq$NP.
+It is also proved that statistical ZK proofs (i.e., both ZK and soundness are statistical) are impossible for NP-complete languages unless P=NP~\cite{AielloH87, Fortnow87, Passs05}.
+Therefore, considering general NP languages, at least one side---ZK or soundness---must be computational.
+In the interactive case, it is demonstrated that both flavors exist: statistical ZK with computational soundness, or statistical soundness with computational ZK~\cite{BrassardCC88, BrassardC86, GoldreichMW86}.
 
-All the existing zkSNARKs are obtained by applying a cryptographic transformation to an information-theoretic proof system~\cite{ZKProof20}.
-We will introduce the necessary cryptographic tools behind the major contributions to zkSNARKs.
+In the non-interactive case, NIZK constructions only had computational ZK until ...
 
-\paragraph{Commitment scheme.}
-A cryptographic commitment scheme enables ...
-A commitment scheme is a tuple $\Gamma=(\Setup, \Comm, \Open)$ of p.p.t. algorithms.
-\begin{enumerate}
-	\item $\Setup(1^{\lambda})\to\pp$ generates public parameters given the security bit number
-	\item $\Comm(\pp,m)\to(\cm,r)$ takes a message $m$ and generates a commitment $\cm$, together with an opening hint $r$
-	\item $\Open(\pp,\cm,m,r)\to b\in\{0,1\}$ takes a message $m$, a commitment $\cm$ and an opening hint $r$, and verifies if $\cm$ is a valid commitment of $m$.
-	If $b=1$, we say $(m,r)$ is a correct opening of $\cm$.
-\end{enumerate}
-A commitment scheme is expected to be \emph{binding}.
+Succinctness is another property that poses stronger security assumptions on the proof system.
+Succinctness is only possible for argument systems, i.e. proof systems with only computational soundness~\cite{BoppanaHZ87, GoldreichH98, GoldreichVW02, Wee05}.
+We provide an intuitive proof for the nonexistence of succinct statistically-sound proof systems for NP-complete language $\cL$.
+Recall that succinct proof systems have only $O(\log n)$ computation cost where $n$ is the size of NP witness $w$.
+If a succinct proof system is also statistically-sound, i.e. it is secure against unbounded prover, the prover should not be able to find valid responses with probability over $1/2$.
+Since the prover can search through the entire response space, this means valid responses do not exist at all.
+However, that would facilitate a probabilistic $O(n)$ algorithm $\cA$ deciding the language $\cL$ with error $1/2$: for any $x\in\cL$, $\cA$ randomly sample the verifier challenges, loop through the response space in $O(n)$ time, and if $\cA$ does not find any valid response, $\cA$ outputs $0$.
+Therefore, $\cL$ is a degenerated language in BPP, i.e. languages having p.p.t. deciding algorithms, which would indicate the collapse of the polynomial hierarchy.
+Hence we proved succinct statistically-sound proof systems should not exist for any interesting NP problems.
 
-\begin{definition}[Binding]
-A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is binding if ...
-\end{definition}
+Furthermore, ...
 
-A commitment scheme can optionally be \emph{hiding}.
+Table~\ref{tab:security.assumption} summarizes the minimum security assumptions underlying different proof systems.
 
-\begin{definition}[Hiding]
-A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is hiding if ...
-\end{definition}
+\begin{table}[tb]
+	\caption{Security Assumptions for Different Proof Systems}
+	\label{tab:security.assumption}
+	\centering
 
-\paragraph{Polynomial commitment.} Polynomial commitment schemes are variants of commitment schemes that have message space $R[X]$, i.e. polynomials over ring $R$, and allow opening a single evaluation of the commited polynomial~\cite{KateZG10}.
-A polynomial commitment scheme is a tuple $\Gamma=(\Setup,\Comm,\Open,\Eval)$ where $(\Setup,\Comm,\Open)$ is a commitment scheme and $\Eval(\pp,\cm,x,y,d)\to b\in\{0,1\}$ is a protocol ...
-Except the binding and hiding properties, a polynomial commitment scheme $\Gamma$ is also expected to be \emph{correct} and \emph{evaluation binding}.
+	\begin{tabular}{ccccccc}
+	\hline
 
-\begin{definition}[Correct]
-A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is correct if ...
-\end{definition}
+	\hline
+	\textbf{Name} & \textbf{Inter.} & \textbf{ZK} & \textbf{Succ.} & \textbf{Sound} & \textbf{Assum.} & \textbf{Model} \\
+	\hline
+		NP          & $\times$     & $\times$     & $\times$     & Uncond. & None       & Std. \\
+		IP          & $\checkmark$ & $\times$     & $\times$     & Stat.   & None       & Std. \\
+		ZKP         & $\checkmark$ & $\checkmark$ & $\times$     & Stat.   & OWF        & Std. \\
+		NIZK        & $\times$     & $\checkmark$ & $\times$     & Stat.   & TDP        & CRS \\
+		sARG        & $\checkmark$ & $\times$     & $\checkmark$ & Comp.   & CRH        & Std. \\
+		sZKA        & $\checkmark$ & $\checkmark$ & $\checkmark$ & Comp.   & CRH        & Std.\\
+		sNIZK       & $\times$     & $\checkmark$ & $\checkmark$ & Comp.   & CRH        & CRS / RO \\
+		SNARG       & $\times$     & $\times$     & $\checkmark$ & Comp.   & nonf.      & CRS / RO  \\
+		SNARK       & $\times$     & $\times$     & $\checkmark$ & AoK     & nonf.      & CRS / RO \\
+		zkSNARK     & $\times$     & $\checkmark$ & $\checkmark$ & AoK     & nonf.      & CRS / RO  \\
+	\hline
 
-\begin{definition}[Evaluation binding]
-A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is evaluation binding if ...
-\end{definition}
+	\hline
+	\end{tabular}
+\end{table}
 
-Sometimes we need a stronger property than the evaluation binding called \emph{knowledge soundness} that requires the prover to ``know'' the committed polynomial~\cite{BunzFS20}.
+\section{zkSNARK Construction Techniques}
 
-\begin{definition}[Knowledge soundness]
-A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ has knowledge soundness if ...
-\end{definition}
+Having learned about the theoretical definitions, we are ready to investigate the details of current constructions.
 
-\paragraph{Accumulator.}
-Accumulators are another kind of variations of commitment schemes.
-Instead of commiting a single element, an accumulator allows commiting to a list of elements, and ...
+\subsection{Construction Framework}
 
-Merkle-tree is an example of accumulator ...
+Before explaining the details, it would be convenient to put the various constructions into a common framework.
+We will briefly review the existing frameworks and demonstrate our unified framework.
 
-\paragraph{Fiat-Shamir transformation and random oracle.}
-Fiat-Shamir transformation is the standard way to transform a public-coin interactive protocol to a non-interactive scheme.
-The Fiat-Shamir transformation works by simulating the verifier challenges by the hash value of prover messages.
-However, the security of the resulting non-interactive scheme is established only in the random oracle model.
-Current security proving techniques require modeling the hash function by a random oracle, which is an ideal functionality that does not exist in reality.
+B\"{u}nz et al.~\cite{BunzFS20} proposed a framework by noting that many SNARKs can be obtained by compiling a polynomial IOP with a polynomial commitment scheme and the Fiat-Shamir protocol.
+A polynomial IOP is an IOP where the proof oracles are restricted to a polynomial, i.e. an oracle that responses with $f(x)$ at query $x$ for some polynomial $f$ of bounded degree.
+The polynomial commitment scheme is responsible for ensuring the prover to behave like a polynomial oracle.
 
-A random oracle is ...
+The ZKProof Community in a reference document~\cite{ZKProof20} presents a more general framework saying that all the ZKPs are obtained by applying a cryptographic transformation to an information-theoretic proof system.
 
-\paragraph{Bilinear pairing.}
-Given groups $\bbG_1$, $\bbG_2$ and $\bbG_T$, with $|\bbG_1|=|\bbG_2|=|\bbG_T|=q$, a bilinear pairing~\cite{BonehF01} is a mapping $e:\bbG_1\times\bbG_2\to\bbG_T$ that satisfies...
+Ben-Sasson recently showed another perspective to view all cryptographic proofs, not just zkSNARKs, as a combination of an \emph{arithmetization} method and a polynomial \emph{low degree checking (LDC)} scheme~\cite{Ben-Sasson2020}.
+The arithmetization step transforms a computation satisfaction problem into an algebraic problem that is more friendly with proof systems.
+The algebraic problem is usually described as a polynomial equation.
+The low degree checking step verifies that the polynomials provided by the prover are within appropriate degree limits.
 
-\section{zkSNARK Construction Paradigms}
+These different frameworks focus on different parts of the same zkSNARK construction pipeline, illustrated in Fig.~\ref{fig:pipeline}.
+B\"{u}nz et al.~\cite{BunzFS20} focuses on abstracting all the proof systems with polynomial IOP and the first compilation into argument systems.
+Ben-Sasson~\cite{Ben-Sasson2020} focuses on arithmetization and views the other three steps in the whole as an LDC scheme.
 
-Having learned about the definitions and the building tools, we are ready to investigate the details of current constructions.
-As mentioned above,
-
-\section{PCP-based zkSNARKs}
-
-\section{Pairing-based zkSNARKs}
-
-\section{GKR-based zkSNARKs}
-
-\section{MPC-based zkSNARKs}
-
-\section{Comparison of zkSNARKs}
-
-\subsection{Efficiency}
-
-In evaluating the efficiency of zkSNAKRs, the properties we care most about are proving time, verification time, proof sizes, and common reference string sizes.
-Fig.~\ref{fig:snark.sizes} summarizes the asymptotic complexities of current zkSNARK implementations.
 \begin{figure}[ht!]
-\includegraphics[width=0.4\textwidth]{images/snark-sizes.pdf}
-\caption{Asymptotic complexities of zkSNARK implementations}
-\label{fig:snark.sizes}
-\descriptionlabel{
-The big-$O$ notation here hides the security parameter $\lambda$.
-The $n$ denotes the statement size.
-For circuit-based zkSNARKs, $n$ is the circuit size.
-For statements with succinct representation, e.g. STARK, $n$ is the length of execution trace, i.e. the size of the circuit representing the unrolled computation.}
+\includegraphics[width=0.5\textwidth]{images/pipeline.pdf}
+\caption{zkSNARK Construction Pipeline}
+\label{fig:pipeline}
 \Description{}
 \end{figure}
 
-\subsection{Security}
+We propose a new framework based on this pipeline, ...
 
-\subsection{Functionality}
+We will introduce the current zkSNARK constructions grouped by the research lines.
+In each group, we will extract the common techniques they share and dive into the details of their differentiations ...
+
+\subsection{PCP-based zkSNARKs}
+
+The PCP-based approach is the result of the series of works of Blum et al.~\cite{BabaiFLS91}, Kilian~\cite{Kilian92}, and Micali~\cite{Micali00}.
+The idea is to design a ZK-PCP for the given language, then compile it into a succinct interactive argument using a commitment scheme~\cite{Kilian92}, and finally apply the Fiat-Shamir transformation to obtain a zkSNARK~\cite{Micali00}.
+For those zkSNARKs based on generalizations of ZK-PCP, e.g. ZK-IPCP, ZK-IOP, we also categorize them into this group.
+
+Most of the researches in this category focus on the design of ZK-PCP.
+Therefore, they mainly differ in the arithmetization and proof system design.
+Another two lines of work fall into this category: the Multi-Party Computation (MPC)-based, and the Polynomial IOP (PIOP)-based zkSNARKs.
+
+\paragraph{STARK.}
+
+\paragraph{Aurora.}
+
+\paragraph{Fractal.}
+
+\subsubsection{MPC-based zkSNARKs}
+
+The MPC-based approach presents a way to transform a secure multi-party computation for any NP language into a ZK-IPCP.
+This line of work originated from Ishai, Kushilevitz, Ostrovsky, and Sahai (IKOS)~\cite{IshaiKOS07}, ...
+
+A multi-party computation scheme is ...
+
+\paragraph{ZKBoo}
+
+\paragraph{ZKB++}
+
+\paragraph{Ligero}
+
+\subsubsection{PIOP-based zkSNARKs}
+
+\paragraph{Sonic}
+
+\paragraph{PLONK}
+
+\paragraph{Supersonic}
+
+
+\subsection{Pairing-based zkSNARKs}
+
+The pairing-based zkSNARKs have one of the most efficient verifier and the smallest proof size.
+As a sacrifice, they rely on an expensive per-circuit trusted setup.
+This line of research originated from the series of works by Groth, Ostrovsky, and Sahai~\cite{GrothOS06Non, GrothOS06Perfect, Groth10}, after the introduction of bilinear-pairing by Boneh et al.~\cite{BonehF01}.
+
+\paragraph{GGRP13.}
+
+\paragraph{Pinocchio.}
+
+\paragraph{BCGTV13.}
+
+\paragraph{Groth16.}
+
+\subsection{IP-based zkSNARKs}
+
+The interactive proof (IP)-based line of research started from the Muggles paper~\cite{GoldwasserKR08} by Goldwasser et al. that brings the GKR protocol.
+However, these studies did not produce a zkSNARK until T. Xie et al. proposed Libra~\cite{XieZZPS19} which introduces the zero-knowledge property to GKR.
+
+To learn about the Libra zkSNARK, it is inevitable to first introduce the famous sum-check protocol, which is the foundation of GKR protocol.
+
+\paragraph{The Sumcheck protocol.}
+
+\paragraph{The GKR protocol.}
+
+\paragraph{Libra.}
+
+\subsection{Recursive zkSNARKs}
+
+The recursive technique is based on the insight that we can further verify the zkSNARK verification computation recursively by another zkSNARK.
+Recursive zkSNARKs work with two primitives: proof-carrying data (PCD) and bootstrapping...
+
+\section{Application-oriented Analysis}
+
+Evaluating and comparing the zkSNARK constructions is challenging because of the high dimensionality of metrics.
+To mitigate this problem, we categorize these metrics into three groups: efficiency, security, and functionality.
+Instead of presenting all the dimensions simultaneously as efficiency analysis usually does, we design several real-world application scenarios.
+Each scenario specifies two sets of criteria: the hard criteria filter for zkSNARKs that satisfy given conditions, and the soft criteria define an order over these filtered zkSNARKs.
+
+\subsection{Computation Delegation}
+
+A common application of zkSNARKs is computation delegation.
+In this scenario, the verifier is usually a device with weak computation power, e.g. a smartphone, while the prover has much more computational resources, e.g. a cloud server.
+The verifier may delegate computation tasks to the prover, but the prover is not completely trustable.
+In this case...
+
+\subsection{Organization with Authorized Leader}
+
+\subsection{Value-transfer-only Permissionless Blockchain}
+
+In a permissionless blockchain, if most activities are transfers of currency ownerships, e.g. in Bitcoin or Zerocash, the verifier efficiency, the proof size, and the public verifiability are crucial.
+Meanwhile, other properties e.g. high prover efficiency, post-quantum security, transparency are nice but not fate-determining.
+Expressiveness and universality are less interesting as the blockchain functionality is simple and stable.
+In this case...
+
+\subsection{Permissionless Blockchain with Smart Contract}
+
+In permissionless blockchains supporting Turing complete smart contracts, e.g. Ethereum, Nervos, the verifier efficiency, the proof size, and the public verifiability are as important as in value-transfer-only blockchains.
+Meanwhile, expressiveness and universality are as significant as efficiency...
+
 
 \section{Conclusion}
+
+We recalled the history of zkSNARKs and summarized the knowledge of zkSNARKs in three levels: the theoretical level, the technical level, and the application level.
+At the theoretical level, by recalling the history, we introduced the proof systems and presented a definition for zkSNARKs in this broader context.
+To better understand the zkSNARK constructions, we demonstrated the theoretical results about proof systems and zkSNARKs, e.g. the security assumptions required for different combinations of efficiency and functionality.
+At the technical level, we introduced existing zkSNARK construction frameworks and presented a unified framework.
+We provided the details of different zkSNARK research lines in the perspective of this framework.
+Finally, at the application level, we analyzed and compared the zkSNARKs in terms of efficiency, security, and functionality, in different application scenarios.
 
 \bibliographystyle{unsrt}
 \bibliography{reference}
