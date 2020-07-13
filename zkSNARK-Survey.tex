@@ -57,81 +57,122 @@
 \section{Introduction}
 
 Zero-Knowledge Succinct Non-interactive ARgument of Knowledge (zkSNARK)~\cite{BitanskyCCT12} enables constant-or-logarithmic-time verification of computation outputs without knowing the inputs.
-The zkSNARKs are particularly useful in blockchains~\cite{Ben-SassonCG0MTV14, SunALY17}, where zkSNARKs facilitate creating confidential transactions that conceal part or all of the transaction details.
-Currently, zkSNARKs are under active research, and recent years have seen an explosion of zkSNARK constructions enjoying different properties, including constant-size proofs~\cite{Groth16, GennaroGP013, Ben-SassonCGTV13, ParnoHG013, Ben-SassonCTV13}, universal or trustless setups~\cite{GrothKMMM18, MallerBKM19, BunzFS20, Ben-SassonBHR18, Ben-SassonCRSVW19, AmesHIV17}, and post-quantum security~\cite{Ben-SassonBHR18, Ben-SassonCRSVW19}.
+This family of proof systems is particularly useful in blockchains~\cite{Ben-SassonCG0MTV14, SunALY17}, where it conceals part or all of the transaction details from the public.
+Recent years have witnessed an explosion of zkSNARK constructions and implementations enjoying different properties, including constant-size proofs~\cite{Groth16, GennaroGP013, Ben-SassonCGTV13, ParnoHG013, Ben-SassonCTV13}, universal or trustless setups~\cite{GrothKMMM18, MallerBKM19, BunzFS20, Ben-SassonBHR18, Ben-SassonCRSVW19, AmesHIV17}, and post-quantum security~\cite{Ben-SassonBHR18, Ben-SassonCRSVW19}.
+
+However, the existing large number of zkSNARK constructions have a wide variety of property combinations related to their efficiency, security, and functionality.
+As balancing these properties is complicated, each construction can claim itself to be the best for a particular choice of focuses.
+This complexity makes it hard for engineers to select a suitable zkSNARK for specific tasks and also difficult for researchers to identify the state-of-the-art.
+Moreover, this research field has diversified into many branches~\cite{XieZZPS19, Nitulescu19, WalfishB15, AmesHIV17, MallerBKM19} that focus on different toolsets~\cite{KateZG10, BabaiFLS91, BonehF01, FiatS86, GennaroGP013, BunzFS20}.
+The barriers between these branches increases with the rapid development of zkSNARKs, resulting in a higher possibility of reinventing tools or repeating mistakes.
+A survey of knowledge of zkSNARKs is needed to provide a unifying vision of the theoretical results, techniques, targets, and challenges, to assist researchers to move forward in this field.
 
 
-However, the rapid development of zkSNARK poses considerable challenges for researchers to keep up with the state-of-the-art.
-Existing zkSNARK constructions rely on a large and growing number of underlying tools, examples shown in Table~\ref{tab:build.tool}.
-Existing reviews of literature~\cite{ZKProof20, Nitulescu19, WalfishB15} only introduced these tools separately instead of in a unified perspective.
-It is also tricky to assess and compare existing schemes due to the high-dimensionality of measurement metrics, summarized in Table~\ref{tab:measure}.
-Most of the studies that propose new constructions include an efficiency analysis and compare their products with previous ones.
-But these analyses are often incomplete and, to make things worse, diverse in notations, metrics, and parameters.
-A comprehensive survey of literature in zkSNARKs can serve as an anchor of knowledge in this field, to enhance understanding of why and how zkSNARKs appeared and thrived, to help to select appropriate zkSNARKs for different application scenarios, to reveal the insights behind current constructions, and to uncover the full potential of the existing techniques to construct more efficient and secure zkSNARKs.
+In this paper, we present a survey that summarizes the knowledge of zkSNARKs.
+This work aims at the following types of readers:
+\begin{itemize}
+	\item readers interested in the academic history of zkSNARKs
+	\item researchers to understand the contributions and challenges of zkSNARKs
+	\item designers to understand existing technology and constructions
+	\item developers to select a zkSNARK suitable for specific engineering tasks
+\end{itemize}
 
-\begin{table}[tb]
-	\caption{Examples of zkSNARK building tools}
-	\label{tab:build.tool}
-	\centering
+\paragraph{Recall of history.} We introduce the history of zkSNARKs (Sect.~\ref{sec:history}) from the landmarking work of Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85} that proposed \emph{zero-knowledge proofs (ZKP)}, a precursor of zkSNARK, to the recent explosion of new constructions.
+As a variant of ZKP, zkSNARK is the product of decades of works devoted to improving zero-knowledge proofs.
+We briefly introduce the motivations and techniques behind these works.
+Fig.~\ref{fig:history} summarizes the history of zkSNARKs.
 
-	\begin{tabular}{cccc}
-	\hline
+\begin{figure}[ht!]
+\includegraphics[width=0.5\textwidth]{images/zksnark-history.pdf}
+\caption{A Summary of zkSNARK History}
+\label{fig:history}
+\Description{}
+\end{figure}
 
-	\hline
-	\textbf{Proof Model} & \textbf{Computation Model} & \textbf{Cryptography}\\
-	\hline
-		IP~\cite{GoldwasserMR85}       & Boolean circuit                  & Polynomial commitments~\cite{KateZG10} \\
-		PCP/PCPP~\cite{BabaiFLS91}     & Arithmetic circuit               & CRH/ECRH \\
-		IPCP                           & Structured circuit               & Bilinear pairing~\cite{BonehF01} \\
-		IOP/IOPP~\cite{Ben-SassonCS16} & Layered circuit                  & Fiat-Shamir~\cite{FiatS86} \\
-		LPCP/LIP~\cite{BitanskyCIPO13} & Random access machine            & Accumulator \\
-		                               & QSP/QAP/SSP~\cite{GennaroGP013}  & Multi-party computation \\
-		                               & AIR/ACSP~\cite{Ben-SassonBHR18}  & Lattic-based \\
-		                               & R1CS                             & Group of unknown order~\cite{BunzFS20} \\
-	\hline
+\paragraph{Theoretical results and challenges.}
+We provide definitions for the concepts related to zkSNARKs (Sect.~\ref{sec:proof.system} to \ref{sec:zksnark}), starting from general concepts e.g., proof systems, NP languages, to specific versions of zkSNARKs, e.g., preprocessing zkSNARK, transparent zkSNARK.
+Based on these definitions, we illustrate the theoretical results (Sect.~\ref{sec:security}), including widely believed assumptions and proved theorems.
+We intuitively explain why these statements are true, or widely believed to be correct, and refer to the literature for readers interested in the proof details.
+We also point out the challenges and open problems in zkSNARKs.
 
-	\hline
-	\end{tabular}
-\end{table}
+\paragraph{Building tools.}
+We describe the toolset used in the existing zkSNARK constructions (Sect.~\ref{sec:build.tool}), including tools from cryptography and complexity theory.
+We focus on describing the syntax and properties of the tools, i.e., how to use it and what to expect from it.
+We also mention the ideas behind some constructions, for example, the Merkle-Tree as a construction of accumulator.
+We refer to the literature for readers interested in the details of how to construct these tools.
+
+\paragraph{Existing constructions.}
+We start describing the existing zkSNARK constructions (Sect.~\ref{sec:construction}) by explaining existing frameworks (Sect.~\ref{sec:framework}) in the literature that try to unify these constructions.
+However, none of these frameworks covers the entire state-of-the-art.
+
+We build a new framework by noticing that all zkSNARKs are essentially determined by how they address the following issues:
+\begin{itemize}
+	\item Which NP-Complete problem to choose;
+	\item What is the underlying interactive model;
+	\item How to simulate unpredictable verifier randomness;
+	\item How to compress the prover message; and
+	\item How to save verifier computation.
+\end{itemize}
+
+We then describe the current constructions grouping them according to the research branches they reside in:
+\begin{itemize}
+	\item PCP/IOP-based zkSNARKs (Sect.~\ref{sec:pcp.based})
+	\item Pairing-based zkSNARKs (Sect.~\ref{sec:pairing.based})
+	\item IP-based zkSNARKs (Sect.~\ref{sec:ip.based})
+	\item Recursive zkSNARKs (Sect.~\ref{sec:recursive})
+\end{itemize}
+We position each branch and the inside constructions into our framework by illustrating how they address the issues we mentioned above.
+For each construction, we provide a simplified version of the algorithms, and refer to the original literature for detailed constructions.
+
+\paragraph{Analysis and comparison.}
+We address the issue that most zkSNARK users care about: how to select a suitable zkSNARK construction for a particular task?
+For this question, we summarize the properties in three groups: efficiency, security, and functionality, as shown in Table~\ref{tab:measure}.
+
+For efficiency properties, e.g., verifier complexity, the property values are expressed as asymptotic functions in some parameters, e.g., the security parameter, the length of the NP witness instance.
+For other properties, we enumerate and explain the possible values.
+For example, for the universality, the possible values include: universal, bounded-size universal, updatable, circuit-specific, parallel-circuit-only.
+
+We list all the property values for each zkSNARK construction.
+We also select some application scenarios.
+For each scenario, we discuss which properties are most important, and suggest some constructions that are suitable for this scenario.
 
 \begin{table}[tb]
 	\caption{Measurement metrics for zkSNARKs}
 	\label{tab:measure}
 	\centering
 
-	\begin{tabular}{ccc}
+	\begin{tabular}{ll}
 	\hline
 
 	\hline
-	\textbf{Efficiency} & \textbf{Security} & \textbf{Functionality} \\
+	\textbf{Group} & \textbf{Properties} \\
 	\hline
-		Prover complexity & Soundness & Expressiveness  \\
-		Verifier complexity & Zero-knowledgeness & Public verifiability \\
-		Setup complexity & Trusted setup & Universality \\
-		Proof length & Post-quantum security & (Non)Preprocessing \\
-		CRS length & Cryptographic assumption & \\
+	\textbf{Efficiency} & Prover complexity \\
+	& Verifier complexity \\
+	& Setup complexity \\
+	& Proof length \\
+	& CRS length \\ \hline
+	\textbf{Security} & Zero-knowledgeness \\
+	& Trusted setup \\
+	& Post-quantum security \\
+	& Cryptographic assumption \\ \hline
+	\textbf{Functionality} & Expressiveness \\
+	& Public verifiability \\
+	& Universality \\
+	& (Non)Preprocessing \\
 	\hline
 
 	\hline
 	\end{tabular}
 \end{table}
 
-In this paper, we present a survey that summarizes the knowledge of zkSNARKs systematically.
-To begin the story, we recall the history of zkSNARKs to understand the role zkSNARK plays in a broader field called ``proof systems''.
-For most of this survey, we present the knowledge of zkSNARKs in three levels:
-\begin{enumerate}
-	\item In the theoretical level, we define zkSNARK as a special case of proof systems.
-	Based on this definition, we illustrate current theoretic results on zkSNARKs, e.g. the best efficiency we can achieve under certain security assumptions.
-	\item In the technical level, we review and unify the existing frameworks of zkSNARK constructions.
-	In this unified framework, we classify and examine the existing zkSNARKs to reveal the insights behind the construction techniques.
-	\item In the application level, we propose an analysis system for measuring and comparing zkSNARKs.
-	Instead of the traditional way that emphasizes the asymptotic complexities and practical performance in ``toy examples'', our system focus on evaluating the practicality of zkSNARKs in different application scenarios.
-	Using this system, we conduct a comprehensive comparison of existing constructions.
-\end{enumerate}
 
 \section{Related Works}
 
-The zkSNARKs are variations of zero-knowledge proofs that originated from the ground-breaking work by Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85}.
+\section{A Biography of zkSNARK}
+\label{sec:history}
+
+The zkSNARKs are variations of \emph{zero-knowledge proofs (ZKP)} that originated from the ground-breaking work by Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85}.
 Zero-knowledge proofs are protocols allowing a party, called the prover, to prove a statement to another party, called the verifier, interactively without leaking secret information.
 This work also introduced the broader concept of \emph{interactive proofs}, which was simultaneously and independently proposed in the work of Babai~\cite{Babai85} in the name of Arthur-Merlin (AM) proofs.
 The major difference between AM proofs and interactive proofs is that AM proofs are public-coin proofs, which means all randomnesses the verifier uses must be revealed later to the prover.
@@ -160,10 +201,12 @@ For the other goal regarding non-interactivity, Blum et al.~\cite{BlumFM88} show
 They also proposed the first NIZK, under the computational assumption that products of two large primes are indifferentiable from products of three large primes.
 Furthermore...
 
-\section{Preliminaries}
+\section{Definitions and Theoretical Results}
 
-Designing zkSNARKs requires systematic use of cryptography and computational complexity theory.
-We will illustrate the concepts in these fields that are most relevant to zkSNARKs.
+The zkSNARKs are special proof systems satisfying a specific set of properties.
+We first give the definitions of proof systems and several properties that a proof system may have.
+Then we define zkSNARKs by referring to these definitions.
+Finally, we discuss the theoretical results about different properties of proof systems and demonstrate the minimum assumptions underlying desired combinations of properties.
 
 \subsection{Notations}
 
@@ -176,73 +219,8 @@ We use $n$ for the bit-lengths of algorithms inputs.
 We use $\eta(n)$ for a negligible function in $n$, $\polylog(n)$ for a poly-logarithmic function, and $\poly(n)$ for a polynomial function.
 We say an algorithm is p.p.t. if the algorithm is probabilistic and can only execute for a period of length $\poly(n)$.
 
-\subsection{Commitment scheme}
-
-A cryptographic commitment scheme enables ...
-A commitment scheme is a tuple $\Gamma=(\Setup, \Comm, \Open)$ of p.p.t. algorithms.
-\begin{enumerate}
-	\item $\Setup(1^{\lambda})\to\pp$ generates public parameters given the security bit number
-	\item $\Comm(\pp,m)\to(\cm,r)$ takes a message $m$ and generates a commitment $\cm$, together with an opening hint $r$
-	\item $\Open(\pp,\cm,m,r)\to b\in\{0,1\}$ takes a message $m$, a commitment $\cm$ and an opening hint $r$, and verifies if $\cm$ is a valid commitment of $m$.
-	If $b=1$, we say $(m,r)$ is a correct opening of $\cm$.
-\end{enumerate}
-A commitment scheme is expected to be \emph{binding}.
-
-\begin{definition}[Binding]
-A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is binding if ...
-\end{definition}
-
-A commitment scheme can optionally be \emph{hiding}.
-
-\begin{definition}[Hiding]
-A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is hiding if ...
-\end{definition}
-
-\paragraph{Polynomial commitment.} Polynomial commitment schemes are variants of commitment schemes that have message space $R[X]$, i.e. polynomials over ring $R$, and allow opening a single evaluation of the committed polynomial~\cite{KateZG10}.
-A polynomial commitment scheme is a tuple $\Gamma=(\Setup,\Comm,\Open,\Eval)$ where $(\Setup,\Comm,\Open)$ is a commitment scheme and $\Eval(\pp,\cm,x,y,d)\to b\in\{0,1\}$ is a protocol ...
-Except for the binding and hiding properties, a polynomial commitment scheme $\Gamma$ is also expected to be \emph{correct} and \emph{evaluation binding}.
-
-\begin{definition}[Correct]
-A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is correct if ...
-\end{definition}
-
-\begin{definition}[Evaluation binding]
-A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is evaluation binding if ...
-\end{definition}
-
-Sometimes we need a stronger property than the evaluation binding called \emph{knowledge soundness} that requires the prover to ``know'' the committed polynomial~\cite{BunzFS20}.
-
-\begin{definition}[Knowledge soundness]
-A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ has knowledge soundness if ...
-\end{definition}
-
-\paragraph{Accumulator.}
-Accumulators are another kind of variations of commitment schemes.
-Instead of committing a single element, an accumulator allows committing to a list of elements, and ...
-
-Merkle-tree is an example of an accumulator ...
-
-\subsection{Fiat-Shamir transformation and random oracle}
-
-Fiat-Shamir transformation is the standard way to transform a public-coin interactive protocol to a non-interactive scheme.
-The Fiat-Shamir transformation works by simulating the verifier challenges by the hash value of prover messages.
-However, the security of the resulting non-interactive scheme is established only in the random oracle model.
-Current security proving techniques require modeling the hash function by a random oracle, which is an ideal functionality that does not exist in reality.
-
-A random oracle is ...
-
-\subsection{Bilinear pairing}
-
-Given groups $\bbG_1$, $\bbG_2$ and $\bbG_T$, with $|\bbG_1|=|\bbG_2|=|\bbG_T|=q$, a bilinear pairing~\cite{BonehF01} is a mapping $e:\bbG_1\times\bbG_2\to\bbG_T$ that satisfies...
-
-\section{Definitions and Theoretical Results}
-
-The zkSNARKs are special proof systems satisfying a specific set of properties.
-We first give the definitions of proof systems and several properties that a proof system may have.
-Then we define zkSNARKs by referring to these definitions.
-Finally, we discuss the theoretical results about different properties of proof systems and demonstrate the minimum assumptions underlying desired combinations of properties.
-
 \subsection{Proof systems}
+\label{sec:proof.system}
 
 A proof system is a protocol that allows a party, namely the prover, to prove a statement to another party, namely the verifier.
 
@@ -400,6 +378,7 @@ A proof system $\PiL$ is scalable if...
 \end{definition}
 
 \subsection{zkSNARK}
+\label{sec:zksnark}
 
 With the above definitions on proof systems and their properties, we can now define zkSNARKs.
 
@@ -416,6 +395,7 @@ Depending on how $\Setup$ works, a zkSNARK may be in one or more of the followin
 \paragraph{Transparent setup.} A zkSNARK has \emph{transparent setup} if ...
 
 \subsection{Security Assumptions}
+\label{sec:security}
 
 After the introduction of zero-knowledge proofs by Goldwasser et al.~\cite{GoldwasserMR85}, Goldreich, Micali, and Wigderson showed that zero-knowledge proofs exist for any NP languages, under the assumption that one-way function exists~\cite{GoldreichMW86}.
 The existence of one-way functions is almost the weakest assumption in cryptography.
@@ -467,11 +447,81 @@ Table~\ref{tab:security.assumption} summarizes the minimum security assumptions 
 	\end{tabular}
 \end{table}
 
-\section{zkSNARK Construction Techniques}
 
-Having learned about the theoretical definitions, we are ready to investigate the details of current constructions.
+\section{Building Tools}
+\label{sec:build.tool}
+
+Here we illustrate some concepts in cryptography and computation complextiy theory that zkSNARKs are built on.
+
+\subsection{Commitment scheme}
+\label{sec:commitment}
+
+A cryptographic commitment scheme enables ...
+A commitment scheme is a tuple $\Gamma=(\Setup, \Comm, \Open)$ of p.p.t. algorithms.
+\begin{enumerate}
+	\item $\Setup(1^{\lambda})\to\pp$ generates public parameters given the security bit number
+	\item $\Comm(\pp,m)\to(\cm,r)$ takes a message $m$ and generates a commitment $\cm$, together with an opening hint $r$
+	\item $\Open(\pp,\cm,m,r)\to b\in\{0,1\}$ takes a message $m$, a commitment $\cm$ and an opening hint $r$, and verifies if $\cm$ is a valid commitment of $m$.
+	If $b=1$, we say $(m,r)$ is a correct opening of $\cm$.
+\end{enumerate}
+A commitment scheme is expected to be \emph{binding}.
+
+\begin{definition}[Binding]
+A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is binding if ...
+\end{definition}
+
+A commitment scheme can optionally be \emph{hiding}.
+
+\begin{definition}[Hiding]
+A commitment scheme $\Gamma=(\Setup,\Comm,\Open)$ is hiding if ...
+\end{definition}
+
+\paragraph{Polynomial commitment.} Polynomial commitment schemes are variants of commitment schemes that have message space $R[X]$, i.e. polynomials over ring $R$, and allow opening a single evaluation of the committed polynomial~\cite{KateZG10}.
+A polynomial commitment scheme is a tuple $\Gamma=(\Setup,\Comm,\Open,\Eval)$ where $(\Setup,\Comm,\Open)$ is a commitment scheme and $\Eval(\pp,\cm,x,y,d)\to b\in\{0,1\}$ is a protocol ...
+Except for the binding and hiding properties, a polynomial commitment scheme $\Gamma$ is also expected to be \emph{correct} and \emph{evaluation binding}.
+
+\begin{definition}[Correct]
+A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is correct if ...
+\end{definition}
+
+\begin{definition}[Evaluation binding]
+A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ is evaluation binding if ...
+\end{definition}
+
+Sometimes we need a stronger property than the evaluation binding called \emph{knowledge soundness} that requires the prover to ``know'' the committed polynomial~\cite{BunzFS20}.
+
+\begin{definition}[Knowledge soundness]
+A polynomial commitment sheme $\Gamma=(\Setup,\Comm,\Open,\Eval)$ has knowledge soundness if ...
+\end{definition}
+
+\paragraph{Accumulator.}
+Accumulators are another kind of variations of commitment schemes.
+Instead of committing a single element, an accumulator allows committing to a list of elements, and ...
+
+Merkle-tree is an example of an accumulator ...
+
+\subsection{Fiat-Shamir transformation and random oracle}
+\label{sec:fiat.shamir}
+
+Fiat-Shamir transformation is the standard way to transform a public-coin interactive protocol to a non-interactive scheme.
+The Fiat-Shamir transformation works by simulating the verifier challenges by the hash value of prover messages.
+However, the security of the resulting non-interactive scheme is established only in the random oracle model.
+Current security proving techniques require modeling the hash function by a random oracle, which is an ideal functionality that does not exist in reality.
+
+A random oracle is ...
+
+\subsection{Bilinear pairing}
+\label{sec:pairing}
+
+Given groups $\bbG_1$, $\bbG_2$ and $\bbG_T$, with $|\bbG_1|=|\bbG_2|=|\bbG_T|=q$, a bilinear pairing~\cite{BonehF01} is a mapping $e:\bbG_1\times\bbG_2\to\bbG_T$ that satisfies...
+
+\section{Existing zkSNARK Constructions}
+\label{sec:construction}
+
+Having introduced the theoretical definitions, we are ready to investigate the details of current constructions.
 
 \subsection{Construction Framework}
+\label{sec:framework}
 
 Before explaining the details, it would be convenient to put the various constructions into a common framework.
 We will briefly review the existing frameworks and demonstrate our unified framework.
@@ -504,6 +554,7 @@ We will introduce the current zkSNARK constructions grouped by the research line
 In each group, we will extract the common techniques they share and dive into the details of their differentiations ...
 
 \subsection{PCP-based zkSNARKs}
+\label{sec:pcp.based}
 
 The PCP-based approach is the result of the series of works of Blum et al.~\cite{BabaiFLS91}, Kilian~\cite{Kilian92}, and Micali~\cite{Micali00}.
 The idea is to design a ZK-PCP for the given language, then compile it into a succinct interactive argument using a commitment scheme~\cite{Kilian92}, and finally apply the Fiat-Shamir transformation to obtain a zkSNARK~\cite{Micali00}.
@@ -520,6 +571,7 @@ Another two lines of work fall into this category: the Multi-Party Computation (
 \paragraph{Fractal.}
 
 \subsubsection{MPC-based zkSNARKs}
+\label{sec:mpc.based}
 
 The MPC-based approach presents a way to transform a secure multi-party computation for any NP language into a ZK-IPCP.
 This line of work originated from Ishai, Kushilevitz, Ostrovsky, and Sahai (IKOS)~\cite{IshaiKOS07}, ...
@@ -533,6 +585,7 @@ A multi-party computation scheme is ...
 \paragraph{Ligero}
 
 \subsubsection{PIOP-based zkSNARKs}
+\label{sec:piop.based}
 
 \paragraph{Sonic}
 
@@ -542,6 +595,7 @@ A multi-party computation scheme is ...
 
 
 \subsection{Pairing-based zkSNARKs}
+\label{sec:pairing.based}
 
 The pairing-based zkSNARKs have one of the most efficient verifier and the smallest proof size.
 As a sacrifice, they rely on an expensive per-circuit trusted setup.
@@ -556,6 +610,7 @@ This line of research originated from the series of works by Groth, Ostrovsky, a
 \paragraph{Groth16.}
 
 \subsection{IP-based zkSNARKs}
+\label{sec:ip.based}
 
 The interactive proof (IP)-based line of research started from the Muggles paper~\cite{GoldwasserKR08} by Goldwasser et al. that brings the GKR protocol.
 However, these studies did not produce a zkSNARK until T. Xie et al. proposed Libra~\cite{XieZZPS19} which introduces the zero-knowledge property to GKR.
@@ -569,11 +624,13 @@ To learn about the Libra zkSNARK, it is inevitable to first introduce the famous
 \paragraph{Libra.}
 
 \subsection{Recursive zkSNARKs}
+\label{sec:recursive}
 
 The recursive technique is based on the insight that we can further verify the zkSNARK verification computation recursively by another zkSNARK.
 Recursive zkSNARKs work with two primitives: proof-carrying data (PCD) and bootstrapping...
 
-\section{Application-oriented Analysis}
+\section{Analysis Framework}
+\label{sec:analysis}
 
 Evaluating and comparing the zkSNARK constructions is challenging because of the high dimensionality of metrics.
 To mitigate this problem, we categorize these metrics into three groups: efficiency, security, and functionality.
