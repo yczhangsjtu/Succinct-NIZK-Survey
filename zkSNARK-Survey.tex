@@ -102,19 +102,19 @@ We also mention the ideas behind some constructions, for example, the Merkle-Tre
 We refer to the literature for readers interested in the details of how to construct these tools.
 
 \paragraph{Existing constructions.}
-We start describing the existing zkSNARK constructions (Sect.~\ref{sec:construction}) by explaining existing frameworks (Sect.~\ref{sec:framework}) in the literature that try to unify these constructions.
+We start describing the existing zkSNARK constructions (Sect.~\ref{sec:construction}) by explaining existing frameworks in the literature (Sect.~\ref{sec:framework}) that try to unify these constructions.
 However, none of these frameworks covers the entire state-of-the-art.
 
 We build a new framework by noticing that all zkSNARKs are essentially determined by how they address the following issues:
 \begin{itemize}
 	\item Which NP-Complete problem to choose;
 	\item What is the underlying interactive model;
-	\item How to simulate unpredictable verifier randomness;
-	\item How to compress the prover message; and
-	\item How to save verifier computation.
+	\item How to simulate the verifier randomness in an unpredictable way;
+	\item How to compress the prover message;
+	\item How to save the verifier computation.
 \end{itemize}
 
-We then describe the current constructions grouping them according to the research branches they reside in:
+We then describe the current constructions grouped according to the research branches they reside in:
 \begin{itemize}
 	\item PCP/IOP-based zkSNARKs (Sect.~\ref{sec:pcp.based})
 	\item Pairing-based zkSNARKs (Sect.~\ref{sec:pairing.based})
@@ -122,7 +122,7 @@ We then describe the current constructions grouping them according to the resear
 	\item Recursive zkSNARKs (Sect.~\ref{sec:recursive})
 \end{itemize}
 We position each branch and the inside constructions into our framework by illustrating how they address the issues we mentioned above.
-For each construction, we provide a simplified version of the algorithms, and refer to the original literature for detailed constructions.
+For each construction, we provide a simplified version of the algorithms, and refer to the original literature for details.
 
 \paragraph{Analysis and comparison.}
 We address the issue that most zkSNARK users care about: how to select a suitable zkSNARK construction for a particular task?
@@ -130,7 +130,7 @@ For this question, we summarize the properties in three groups: efficiency, secu
 
 For efficiency properties, e.g., verifier complexity, the property values are expressed as asymptotic functions in some parameters, e.g., the security parameter, the length of the NP witness instance.
 For other properties, we enumerate and explain the possible values.
-For example, for the universality, the possible values include: universal, bounded-size universal, updatable, circuit-specific, parallel-circuit-only.
+For example, the possible values for ``universality'' include: universal, bounded-size universal, updatable, circuit-specific, parallel-circuit-only.
 
 We list all the property values for each zkSNARK construction.
 We also select some application scenarios.
