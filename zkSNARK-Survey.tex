@@ -60,24 +60,24 @@ Zero-Knowledge Succinct Non-interactive ARgument of Knowledge (zkSNARK)~\cite{Bi
 This family of proof systems is particularly useful in blockchains~\cite{Ben-SassonCG0MTV14, SunALY17}, where it conceals part or all of the transaction details from the public.
 Recent years have witnessed an explosion of zkSNARK constructions and implementations enjoying different properties, including constant-size proofs~\cite{Groth16, GennaroGP013, Ben-SassonCGTV13, ParnoHG013, Ben-SassonCTV13}, universal or trustless setups~\cite{GrothKMMM18, MallerBKM19, BunzFS20, Ben-SassonBHR18, Ben-SassonCRSVW19, AmesHIV17}, and post-quantum security~\cite{Ben-SassonBHR18, Ben-SassonCRSVW19}.
 
-However, the existing large number of zkSNARK constructions have a wide variety of property combinations related to their efficiency, security, and functionality.
+The existing large number of zkSNARK constructions have a wide variety of property combinations related to their efficiency, security, and functionality.
 As balancing these properties is complicated, each construction can claim itself to be the best for a particular choice of focuses.
 This complexity makes it hard for engineers to select a suitable zkSNARK for specific tasks and also difficult for researchers to identify the state-of-the-art.
-Moreover, this research field has diversified into many branches~\cite{XieZZPS19, Nitulescu19, WalfishB15, AmesHIV17, MallerBKM19} that focus on different toolsets~\cite{KateZG10, BabaiFLS91, BonehF01, FiatS86, GennaroGP013, BunzFS20}.
-The barriers between these branches increases with the rapid development of zkSNARKs, resulting in a higher possibility of reinventing tools or repeating mistakes.
-A survey of knowledge of zkSNARKs is needed to provide a unifying vision of the theoretical results, techniques, targets, and challenges, to assist researchers to move forward in this field.
+Moreover, this research field has diversified into many branches~\cite{XieZZPS19, Nitulescu19, WalfishB15, AmesHIV17, MallerBKM19} that rely on different toolsets~\cite{KateZG10, BonehF01, FiatS86, BunzFS20} or models~\cite{BabaiFLS91, GennaroGP013, Ben-SassonCGT13}.
+The barriers between these branches increase with the rapid development of zkSNARKs, resulting in a higher possibility of reinventing tools or repeating mistakes.
+A survey of knowledge for zkSNARKs is needed to provide a unifying vision of this field in terms of its theoretical results, techniques, targets, and challenges, to assist researchers to move forward in this field.
 
 
 In this paper, we present a survey that summarizes the knowledge of zkSNARKs.
 This work aims at the following types of readers:
 \begin{itemize}
 	\item readers interested in the academic history of zkSNARKs
-	\item researchers to understand the contributions and challenges of zkSNARKs
-	\item designers to understand existing technology and constructions
-	\item developers to select a zkSNARK suitable for specific engineering tasks
+	\item researchers to understand the theoretical contributions of zkSNARKs and the challenges this field is facing
+	\item designers to understand the existing technologies in this field
+	\item developers to select a zkSNARK construction or implementation suitable for their tasks
 \end{itemize}
 
-\paragraph{Recall of history.} We introduce the history of zkSNARKs (Sect.~\ref{sec:history}) from the landmarking work of Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85} that proposed \emph{zero-knowledge proofs (ZKP)}, a precursor of zkSNARK, to the recent explosion of new constructions.
+\paragraph{Recall of history.} We introduce the history of zkSNARKs (Sect.~\ref{sec:history}) from the landmarking work of Goldwasser, Micali, and Rackoff~\cite{GoldwasserMR85} that proposed \emph{zero-knowledge proofs (ZKP)}, a precursor of zkSNARK, to the recent explosion of new constructions and implementations.
 As a variant of ZKP, zkSNARK is the product of decades of works devoted to improving zero-knowledge proofs.
 We briefly introduce the motivations and techniques behind these works.
 Fig.~\ref{fig:history} summarizes the history of zkSNARKs.
@@ -90,15 +90,15 @@ Fig.~\ref{fig:history} summarizes the history of zkSNARKs.
 \end{figure}
 
 \paragraph{Theoretical results and challenges.}
-We provide definitions for the concepts related to zkSNARKs (Sect.~\ref{sec:proof.system} to \ref{sec:zksnark}), starting from general concepts e.g., proof systems, NP languages, to specific versions of zkSNARKs, e.g., preprocessing zkSNARK, transparent zkSNARK.
+We provide definitions for the concepts related to zkSNARKs (Sect.~\ref{sec:proof.system} to \ref{sec:zksnark}), starting from general concepts e.g., proof systems, NP languages, to variations of zkSNARKs, e.g., preprocessing zkSNARK, transparent zkSNARK.
 Based on these definitions, we illustrate the theoretical results (Sect.~\ref{sec:security}), including widely believed assumptions and proved theorems.
 We intuitively explain why these statements are true, or widely believed to be correct, and refer to the literature for readers interested in the proof details.
 We also point out the challenges and open problems in zkSNARKs.
 
 \paragraph{Building tools.}
-We describe the toolset used in the existing zkSNARK constructions (Sect.~\ref{sec:build.tool}), including tools from cryptography and complexity theory.
-We focus on describing the syntax and properties of the tools, i.e., how to use it and what to expect from it.
-We also mention the ideas behind some constructions, for example, the Merkle-Tree as a construction of accumulator.
+We describe the toolset used in the existing zkSNARK constructions (Sect.~\ref{sec:build.tool}).
+We focus on describing the syntax and properties of the tools, i.e., how to use them and what to expect from them.
+We also mention the ideas to realize some tools, for example, the Merkle-Tree as a realization of vector commitment.
 We refer to the literature for readers interested in the details of how to construct these tools.
 
 \paragraph{Existing constructions.}
@@ -109,14 +109,14 @@ We build a new framework by noticing that all zkSNARKs are essentially determine
 \begin{itemize}
 	\item Which NP-Complete problem to choose;
 	\item What is the underlying interactive model;
-	\item How to simulate the verifier randomness in an unpredictable way;
+	\item How to simulate the verifier randomness unpredictably;
 	\item How to compress the prover message;
 	\item How to save the verifier computation.
 \end{itemize}
 
 We then describe the current constructions grouped according to the research branches they reside in:
 \begin{itemize}
-	\item PCP/IOP-based zkSNARKs (Sect.~\ref{sec:pcp.based})
+	\item PCP-based zkSNARKs (Sect.~\ref{sec:pcp.based})
 	\item Pairing-based zkSNARKs (Sect.~\ref{sec:pairing.based})
 	\item IP-based zkSNARKs (Sect.~\ref{sec:ip.based})
 	\item Recursive zkSNARKs (Sect.~\ref{sec:recursive})
@@ -451,7 +451,7 @@ Table~\ref{tab:security.assumption} summarizes the minimum security assumptions 
 \section{Building Tools}
 \label{sec:build.tool}
 
-Here we illustrate some concepts in cryptography and computation complextiy theory that zkSNARKs are built on.
+Here we illustrate some tools in cryptography and computation complextiy theory that zkSNARKs are built on.
 
 \subsection{Commitment scheme}
 \label{sec:commitment}
@@ -629,7 +629,7 @@ To learn about the Libra zkSNARK, it is inevitable to first introduce the famous
 The recursive technique is based on the insight that we can further verify the zkSNARK verification computation recursively by another zkSNARK.
 Recursive zkSNARKs work with two primitives: proof-carrying data (PCD) and bootstrapping...
 
-\section{Analysis Framework}
+\section{Analysis and Comparison}
 \label{sec:analysis}
 
 Evaluating and comparing the zkSNARK constructions is challenging because of the high dimensionality of metrics.
